@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -51,6 +52,9 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.login_form)
     View mLoginFormView;
 
+    @BindView(R.id.crash)
+    Button crash;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +64,9 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
+    public void crashbutton(View view){
+        throw new RuntimeException("This is a crash for testing purpose");
+    }
     @Override
     public void onBackPressed() {
         setResult(RESULT_CANCELED);

@@ -85,6 +85,17 @@
                 android:text="@string/action_sign_in"
                 android:textStyle="bold" />
 
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="crash"
+                android:id="@+id/crash"
+                android:visibility="gone"
+                android:onClick="crashbutton"
+                android:textColor="@color/black"
+                android:layout_marginTop="20dp"
+                android:layout_gravity="center"/>
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
