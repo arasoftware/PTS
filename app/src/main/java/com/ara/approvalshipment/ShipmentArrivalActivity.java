@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -100,6 +101,7 @@ public class ShipmentArrivalActivity extends AppCompatActivity {
 
     Shipment shipment;
     int position;
+    double goodQty = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,10 +160,10 @@ public class ShipmentArrivalActivity extends AppCompatActivity {
 
         double totalDamaged = (shipment.getClottedQty()/20) + (shipment.getDamagedQty()/20) +
                 shipment.getOwnDiversionQty() + shipment.getCompanyDiversionQty();
-        double goodQty = shipment.getQuantity() - totalDamaged;
+        goodQty = shipment.getQuantity() - totalDamaged;
         shipment.setGoodQty(goodQty);
         mGoodQty.setText(formatDouble(shipment.getGoodQty()));
-
+//        Log.e("TAG","good quantity : "+goodQty );
         if (goodQty <= 0) {
             mGoodQty.setTextColor(Color.RED);
         }
@@ -184,8 +186,10 @@ public class ShipmentArrivalActivity extends AppCompatActivity {
         String damagedReason = mDamagedReasonView.getText().toString();
         String companyQty = mComDiversionQty.getText().toString();
         String ownQty = mOwnDiversionQty.getText().toString();
+        Double goodQ = Double.valueOf(mGoodQty.getText().toString());
 
 
+//        Log.e("TAG","good gettext : "+mGoodQty.getText().toString());
         double dblClottedQty = toDouble(clottedQty);
         double dblDamagedQty = toDouble(damagedQty);
         shipment.setClottedQty(dblClottedQty);
@@ -194,8 +198,10 @@ public class ShipmentArrivalActivity extends AppCompatActivity {
         shipment.setClottedReason(clottedReason);
         shipment.setOwnDiversionQty(toDouble(ownQty));
         shipment.setCompanyDiversionQty(toDouble(companyQty));
+        shipment.setGoodQty(goodQ);
         shipment.setUser(CurrentUser);
 
+//        Log.e("TAG","Reponse date : "+shipment.toJson());
         new SubmitShipment().execute();
     }
 
@@ -210,6 +216,7 @@ public class ShipmentArrivalActivity extends AppCompatActivity {
         String clottedReason = mClottedReasonView.getText().toString();
         String damagedQty = mDamagedQtyView.getText().toString();
         String damagedReason = mDamagedReasonView.getText().toString();
+        double goodq = Double.parseDouble(mGoodQty.getText().toString());
 
         if (!clottedQty.isEmpty() && clottedReason.isEmpty()) {
             String error = getResources().getString(R.string.clotted_reason_error);
@@ -222,6 +229,10 @@ public class ShipmentArrivalActivity extends AppCompatActivity {
             return false;
         }
         if (shipment.getGoodQty() < 0) {
+            showSnackbar(mDateView, R.string.good_qty_neg);
+            return false;
+        }
+        if (goodq < 0){
             showSnackbar(mDateView, R.string.good_qty_neg);
             return false;
         }
@@ -310,6 +321,9 @@ public class ShipmentArrivalActivity extends AppCompatActivity {
                         .build();
                 okhttp3.Response response = client.newCall(request).execute();
                 ResponseBody responseBody = response.body();
+                Log.e("TAG","response body : "+ response.body());
+                Log.e("TAG","response body : "+ responseBody);
+                Log.e("TAG","response body : "+ shipment.toJson());
 
 
             } catch (Exception e) {
